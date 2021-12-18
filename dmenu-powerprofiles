@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Deps:
+# 0. power-profiles-daemon
+# 1. dmenu
+# 2. jq
+# 3. dunst
+
+MENU="/usr/local/bin/dmenu"
+
+LIST_PROFILES='''
+[
+["Performance", "High performance and power usage."],
+["Balanced",    "Standard performance and power usage."],
+["Power-saver", "Reduced performance and power usage."]
+]
+'''
+
+EXPECT_PROFILES=$(echo ${LIST_PROFILES@L} | jq -r '.[][0]' | tr '\n' ' ')
+
+profile_set() {
+    for PROFILE in $EXPECT_PROFILES; do
+        CHECK_PROFILE=$(powerprofilesctl list | grep "$PROFILE" | tr -d '* ')
+        if [ ! -z $CHECK_PROFILE ]; then
+            PROFILES+=$CHECK_PROFILE
+        fi
+    done
+
+    SELECTED_PROFILE=$(echo ${PROFILES%?} | tr ':' '\n' | $MENU -i -p 'Select Profile')
+    if [ ! -z $SELECTED_PROFILE ]; then
+        powerprofilesctl set $SELECTED_PROFILE
+        profile_notif
+    fi
+ }
+
+profile_get() {
+    profile_notif
+}
+
+profile_notif() {
+    GET_PROFILE=$(echo $(powerprofilesctl get))
+
+    PROFILES_LENGTH=$(echo $LIST_PROFILES | jq length)
+    for i in $(seq 0 $(($PROFILES_LENGTH - 1))); do
+        EXPECT_PROFILES_SELECT=$(echo $EXPECT_PROFILES | cut -d' ' -f$((i + 1)))
+        if [ $GET_PROFILE = $EXPECT_PROFILES_SELECT ]; then
+            PROF_NAME=$(echo $LIST_PROFILES | jq -r --arg i $i '.[($i|tonumber)][0]')
+            PROF_DESC=$(echo $LIST_PROFILES | jq -r --arg i $i '.[($i|tonumber)][1]')
+        fi
+    done
+
+    dunstify "Power Profile: $PROF_NAME" "$PROF_DESC" -t 3000 -r 1
+}
+
+main() {
+    OPTIONS='''
+    [
+    ["Get", "profile_get"],
+    ["Set", "profile_set"]
+    ]
+    '''
+
+    OBJ_MENU=$(echo $OPTIONS | jq -r '.[][0]' | $MENU -i -p 'Power Profiles')
+    OBJ_SELECTED=$(echo $OPTIONS | jq -r ".[] | select(.[0] == \"$OBJ_MENU\") | .[1]")
+
+    $OBJ_SELECTED
+}
+
+main
