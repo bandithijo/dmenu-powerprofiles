@@ -20,18 +20,18 @@ EXPECT_PROFILES=$(echo ${LIST_PROFILES@L} | jq -r '.[][0]' | tr '\n' ' ')
 
 profile_set() {
     for PROFILE in $EXPECT_PROFILES; do
-        CHECK_PROFILE=$(powerprofilesctl list | grep "$PROFILE" | tr -d '* ')
+        CHECK_PROFILE=$(powerprofilesctl list | grep $PROFILE | tr -d '* ')
         if [ ! -z $CHECK_PROFILE ]; then
             PROFILES+=$CHECK_PROFILE
         fi
     done
 
-    SELECTED_PROFILE=$(echo ${PROFILES%?} | tr ':' '\n' | $MENU -i -p 'Select Profile')
+    SELECTED_PROFILE=$(echo ${PROFILES%?} | tr ':' '\n' | dmenu -i -p ' Select Profile')
     if [ ! -z $SELECTED_PROFILE ]; then
         powerprofilesctl set $SELECTED_PROFILE
         profile_notif
     fi
- }
+}
 
 profile_get() {
     profile_notif
@@ -60,7 +60,7 @@ main() {
     ]
     '''
 
-    OBJ_MENU=$(echo $OPTIONS | jq -r '.[][0]' | $MENU -i -p 'Power Profiles')
+    OBJ_MENU=$(echo $OPTIONS | jq -r '.[][0]' | dmenu -i -p ' Power Profiles')
     OBJ_SELECTED=$(echo $OPTIONS | jq -r ".[] | select(.[0] == \"$OBJ_MENU\") | .[1]")
 
     $OBJ_SELECTED
