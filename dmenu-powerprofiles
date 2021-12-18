@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# Deps:
-# 0. power-profiles-daemon
-# 1. dmenu
-# 2. jq
-# 3. dunst
+# BanditHijo - December 2021
 
-MENU="/usr/local/bin/dmenu"
+# Deps:
+# - power-profiles-daemon (powerprofilesctl)
+# - dmenu
+# - jq
+# - dunst
 
 LIST_PROFILES='''
 [
