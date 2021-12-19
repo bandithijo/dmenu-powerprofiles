@@ -17,6 +17,8 @@ Just copy `dmenu-powerprofiles` into your `$PATH`.
 
 ## 🍻 Related Project
 
+\* **NOTE**: Feel free to add your project (if related) here.
+
 0. ...
 
 ## 🏛️ Copyright and License
