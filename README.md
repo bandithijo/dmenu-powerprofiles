@@ -21,7 +21,7 @@ Copyright © December 2021 Rizqi Nur Assyaufi.
 
 Free use of this software is granted under the terms of the MIT License.
 
-See [LICENSE](https://github.com/bandithijo/dmenu-powerprofiles/blob/fe634a71ef270a452c66d33476065890385a32f5/dmenu-powerprofiles#L3) for details.
+See [LICENSE](LICENSE) for details.
 
 ## 🍱 Original Project
 
