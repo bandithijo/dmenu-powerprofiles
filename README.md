@@ -15,6 +15,10 @@ power-profiles-daemon with dmenu.
 
 Just copy `dmenu-powerprofiles` into your `$PATH`.
 
+## 🍻 Related Project
+
+0. ...
+
 ## 🏛️ Copyright and License
 
 Copyright © December 2021 Rizqi Nur Assyaufi.
