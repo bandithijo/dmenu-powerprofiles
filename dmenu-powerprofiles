@@ -16,13 +16,17 @@ LIST_PROFILES='''
 
 EXPECT_PROFILES=$(echo ${LIST_PROFILES@L} | jq -r '.[][0]' | tr '\n' ' ')
 
-profile_set() {
-    for PROFILE in $EXPECT_PROFILES; do
-        CHECK_PROFILE=$(powerprofilesctl list | grep $PROFILE | tr -d '* ')
-        if [ ! -z $CHECK_PROFILE ]; then
-            PROFILES+=$CHECK_PROFILE
+check_available_profiles() {
+    for profile in $EXPECT_PROFILES; do
+        CHECK_SELECTED_PROFILE=$(powerprofilesctl list | grep $profile | tr -d '* ')
+        if [ ! -z $CHECK_SELECTED_PROFILE ]; then
+            PROFILES+=$CHECK_SELECTED_PROFILE
         fi
     done
+}
+
+profile_set() {
+    check_available_profiles
 
     SELECTED_PROFILE=$(echo ${PROFILES%?} | tr ':' '\n' | dmenu -i -p ' Select Profile')
     if [ ! -z $SELECTED_PROFILE ]; then
